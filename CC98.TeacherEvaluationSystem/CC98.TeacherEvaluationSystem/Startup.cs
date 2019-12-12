@@ -2,13 +2,18 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CC98.Authentication.OpenIdConnect;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Framework.DependencyInjection;
+using Microsoft.IdentityModel.Protocols.OpenIdConnect;
 
 namespace CC98.TeacherEvaluationSystem
 {
@@ -40,6 +45,33 @@ namespace CC98.TeacherEvaluationSystem
 		public void ConfigureServices(IServiceCollection services)
 		{
 			services.AddControllersWithViews();
+
+			services.AddExternalSignInManager();
+			services.AddAuthentication(IdentityConstants.ApplicationScheme)
+				.AddCookie(IdentityConstants.ApplicationScheme, options =>
+				{
+					options.LoginPath = "/Account/LogOn";
+					options.LogoutPath = "/Account/LogOff";
+					options.AccessDeniedPath = "/Home/AccessDenied";
+
+					options.Cookie.HttpOnly = true;
+					options.Cookie.SecurePolicy = CookieSecurePolicy.None;
+					options.Cookie.SameSite = SameSiteMode.Lax;
+				})
+				.AddCookie(IdentityConstants.ExternalScheme)
+				.AddCC98(CC98Defaults.AuthenticationScheme, options =>
+				{
+					options.ClientId = Configuration["Authentication:CC98:ClientId"];
+					options.ClientSecret = Configuration["Authentication:CC98:ClientSecret"];
+					options.CallbackPath = "/signin-cc98";
+					options.Scope.Add(OpenIdConnectScope.OpenIdProfile);
+					options.ResponseType = OpenIdConnectResponseType.CodeIdTokenToken;
+					options.SignInScheme = IdentityConstants.ExternalScheme;
+				});
+
+			services.AddSession();
+			services.AddEnhancedTempData();
+			services.AddOperationMessages();
 		}
 
 		/// <summary>
@@ -62,6 +94,8 @@ namespace CC98.TeacherEvaluationSystem
 			}
 			app.UseHttpsRedirection();
 			app.UseStaticFiles();
+
+			app.UseSession();
 
 			app.UseRouting();
 

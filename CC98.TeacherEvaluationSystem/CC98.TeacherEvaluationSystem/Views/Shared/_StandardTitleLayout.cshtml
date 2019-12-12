@@ -1,0 +1,20 @@
+﻿@{
+	Layout = "_Layout";
+}
+
+<div asp-message-list="AlertDialogClosable"></div>
+
+<h1 class="text-center lead">@ViewBag.Title</h1>
+<hr />
+
+@RenderBody()
+
+@section Head
+{
+	@await RenderSectionAsync("Head", false)
+}
+
+@section Scripts
+{
+	@await RenderSectionAsync("Scripts", false)
+}
