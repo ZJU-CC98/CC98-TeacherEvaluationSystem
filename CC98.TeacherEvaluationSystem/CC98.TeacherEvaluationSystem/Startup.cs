@@ -3,12 +3,14 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using CC98.Authentication.OpenIdConnect;
+using CC98.TeacherEvaluationSystem.Data;
 using JetBrains.Annotations;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.HttpsPolicy;
 using Microsoft.AspNetCore.Identity;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
@@ -44,6 +46,11 @@ namespace CC98.TeacherEvaluationSystem
 		[UsedImplicitly]
 		public void ConfigureServices(IServiceCollection services)
 		{
+			services.AddDbContext<TesDbContext>(options =>
+			{
+				options.UseSqlServer(Configuration.GetConnectionString("Tes"));
+			});
+
 			services.AddControllersWithViews();
 
 			services.AddExternalSignInManager();
