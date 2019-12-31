@@ -1,0 +1,50 @@
+﻿@using CC98.TeacherEvaluationSystem.Data
+@using Microsoft.EntityFrameworkCore
+@model CC98.TeacherEvaluationSystem.Data.Teacher
+@inject TesDbContext DbContext
+@{
+	ViewBag.Title = "创建教师";
+
+	var departments =
+		await (from i in DbContext.Departments
+			   orderby i.Name
+			   select i).ToArrayAsync();
+
+	var departmentSelectList = new SelectList(departments, nameof(Department.Id), nameof(Department.Name));
+}
+
+<form asp-controller="Teacher" asp-action="Create" method="post" asp-antiforgery="true">
+
+	<div class="row justify-content-center">
+		<div class="col-12 col-sm-9 col-md-6">
+
+			<div class="form-group">
+				<label asp-for="Name">教师名称</label>
+				<input type="text" asp-for="Name" />
+				<span class="text-danger" asp-validation-for="Name"></span>
+				<small class="form-text text-muted">教师的名称。将会显示在列表和详细信息界面。</small>
+			</div>
+
+			<div class="form-group">
+				<label asp-for="Department">所属部门</label>
+				<select asp-items="@departmentSelectList" asp-for="DepartmentId"></select>
+				<span class="text-danger" asp-validation-for="Department"></span>
+				<small class="form-text text-muted">教师所属的部门。将会显示在列表和详细信息界面，也用于对教师进行分类。</small>
+			</div>
+
+			<div class="form-group">
+				<label asp-for="Description">所属部门</label>
+				<textarea type="text" asp-for="Description" rows="3"></textarea>
+				<span class="text-danger" asp-validation-for="Description"></span>
+				<small class="form-text text-muted">教师的详细信息。会显示在详细信息页面。</small>
+			</div>
+
+			<hr />
+			<div class="text-danger" asp-validation-summary="ModelOnly"></div>
+			<button type="submit" class="btn btn-primary">创建教师</button>
+			<button type="reset" class="btn btn-outline-secondary">清空内容</button>
+
+		</div>
+	</div>
+
+</form>

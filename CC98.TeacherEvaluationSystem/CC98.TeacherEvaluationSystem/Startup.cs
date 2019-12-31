@@ -79,6 +79,29 @@ namespace CC98.TeacherEvaluationSystem
 			services.AddSession();
 			services.AddEnhancedTempData();
 			services.AddOperationMessages();
+
+			services.AddAuthorization(options =>
+			{
+				options.AddPolicy(Policies.Edit, builder =>
+				{
+					builder.RequireRole(Policies.Edit, Policies.Roles.Editor, Policies.Roles.Operator,
+						Policies.Roles.Administrators,
+						Policies.Roles.GeneralAdministrators);
+				});
+
+				options.AddPolicy(Policies.Review,
+					builder =>
+					{
+						builder.RequireRole(Policies.Roles.Reviewer, Policies.Roles.Operator,
+							Policies.Roles.Administrators, Policies.Roles.GeneralAdministrators);
+					});
+
+				options.AddPolicy(Policies.Admin,
+					builder =>
+					{
+						builder.RequireRole(Policies.Roles.Administrators, Policies.Roles.GeneralAdministrators);
+					});
+			});
 		}
 
 		/// <summary>
@@ -106,6 +129,7 @@ namespace CC98.TeacherEvaluationSystem
 
 			app.UseRouting();
 
+			app.UseAuthentication();
 			app.UseAuthorization();
 
 			app.UseEndpoints(endpoints =>
