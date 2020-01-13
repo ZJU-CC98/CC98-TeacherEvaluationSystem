@@ -7,7 +7,7 @@
 			"destination": "wwwroot/lib/font-awesome/"
 		},
 		{
-			"library": "twitter-bootstrap@4.3.1",
+			"library": "twitter-bootstrap@4.4.1",
 			"destination": "wwwroot/lib/bootstrap/"
 		},
 		{
@@ -20,10 +20,10 @@
 		},
 		{
 			"library": "jquery-validation-unobtrusive@3.2.11",
-			"destination": "wwwroot/lib/jquery-validation-unobtrusive"
+			"destination": "wwwroot/lib/jquery-validation-unobtrusive/"
 		},
 		{
-			"library": "popper.js@1.15.0",
+			"library": "popper.js@1.16.0",
 			"destination": "wwwroot/lib/popper.js/"
 		}
 	]
