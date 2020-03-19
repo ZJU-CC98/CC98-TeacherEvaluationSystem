@@ -1,0 +1,34 @@
+﻿@model IEnumerable<Department>
+@{
+
+	var selectList = GenerateSelectedItem(Model, 0);
+	var modelFor = (ModelExpression)ViewBag.ModelFor;
+}
+
+<select asp-items="@selectList" name="@modelFor.Name" value="@modelFor.Model" asp-option-label="不属于任何部门" class="form-control">
+</select>
+
+@functions
+{
+	/// <summary>
+	/// 生成部门和子部门的列表。
+	/// </summary>
+	/// <param name="departments">一个或多个部门。</param>
+	/// <param name="currentLevel">部门的等级。</param>
+	/// <returns>部门列表的集合。</returns>
+	IEnumerable<SelectListItem> GenerateSelectedItem(IEnumerable<Department> departments, int currentLevel)
+	{
+		const string spaceChar = "\u00A0\u00A0";
+		var prefix = spaceChar.Repeat(currentLevel);
+
+		foreach (var item in departments.OrderBy(i => i.Name))
+		{
+			yield return new SelectListItem($"{prefix}{item.Name}", $"{item.Id:D}");
+
+			foreach (var subItem in GenerateSelectedItem(item.Children, currentLevel + 1))
+			{
+				yield return subItem;
+			}
+		}
+	}
+}

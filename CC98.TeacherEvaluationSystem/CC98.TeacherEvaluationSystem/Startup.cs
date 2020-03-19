@@ -16,6 +16,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Framework.DependencyInjection;
 using Microsoft.IdentityModel.Protocols.OpenIdConnect;
+using Sakura.AspNetCore.Mvc;
 
 namespace CC98.TeacherEvaluationSystem
 {
@@ -102,6 +103,8 @@ namespace CC98.TeacherEvaluationSystem
 						builder.RequireRole(Policies.Roles.Administrators, Policies.Roles.GeneralAdministrators);
 					});
 			});
+
+			services.AddBootstrapPagerGenerator(options => options.ConfigureDefault());
 		}
 
 		/// <summary>

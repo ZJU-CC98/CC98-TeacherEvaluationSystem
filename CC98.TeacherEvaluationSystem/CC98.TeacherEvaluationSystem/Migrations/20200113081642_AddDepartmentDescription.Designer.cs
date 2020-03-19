@@ -4,14 +4,16 @@ using CC98.TeacherEvaluationSystem.Data;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 
 namespace CC98.TeacherEvaluationSystem.Migrations
 {
     [DbContext(typeof(TesDbContext))]
-    partial class TesDbContextModelSnapshot : ModelSnapshot
+    [Migration("20200113081642_AddDepartmentDescription")]
+    partial class AddDepartmentDescription
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

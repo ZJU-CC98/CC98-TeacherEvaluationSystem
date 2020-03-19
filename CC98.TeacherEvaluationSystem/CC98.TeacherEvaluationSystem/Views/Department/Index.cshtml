@@ -1,0 +1,35 @@
+﻿@model IPagedList<Department>
+@{
+	ViewBag.Title = "部门一览";
+}
+
+@if (Model.Any())
+{
+
+	<div class="row justify-content-center">
+
+		@foreach (var i in Model)
+		{
+			<div class="col-6 col-sm-4 col-md-3">
+				<div class="card text-center">
+					<div class="card-body">
+						<p class="card-title"><a asp-controller="Department" asp-action="Detail" asp-route-id="@i.Id">@i.Name</a></p>
+					</div>
+				</div>
+			</div>
+		}
+
+	</div>
+
+	<hr />
+	<pager />
+}
+else
+{
+	<p class="text-center text-muted">目前还没有任何部门。请等待管理员添加部门。</p>
+}
+
+<authorize policy="@Policies.Edit">
+	<hr />
+	<a asp-controller="Department" asp-action="Create" class="btn btn-primary">创建部门</a>
+</authorize>

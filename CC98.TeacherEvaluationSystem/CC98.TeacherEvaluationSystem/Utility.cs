@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Security.Claims;
 using System.Security.Principal;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
@@ -112,5 +113,39 @@ namespace CC98.TeacherEvaluationSystem
 		/// <returns>表示异步操作的任务。操作结果包含一个值，指示控制器的当前用户是否满足至少其中一个策略。</returns>
 		public static Task<bool> UserMatchesAnyAsync(this ControllerBase controller, params string[] policyNames) =>
 			controller.HttpContext.UserMatchesAnyAsync(policyNames);
+
+		/// <summary>
+		/// 获取异常的根源的描述信息。
+		/// </summary>
+		/// <param name="exception">异常对象。</param>
+		/// <returns>异常的根源对应的描述信息。</returns>
+		public static string GetBaseMessage(this Exception exception) => exception.GetBaseException().Message;
+
+		/// <summary>
+		/// 重复一个字符串若干次。
+		/// </summary>
+		/// <param name="value">要重复的字符串。</param>
+		/// <param name="count">要重复的次数。</param>
+		/// <returns>重复的结果。如果 <paramref name="value"/> 是 <c>null</c>，则返回 <see cref="string.Empty"/>。</returns>
+		public static string Repeat(this string value, int count)
+		{
+			if (count < 0)
+			{
+				throw new ArgumentOutOfRangeException(nameof(count), count, "重复次数不能为负数。");
+			}
+
+			if (string.IsNullOrEmpty(value) || count == 0)
+			{
+				return string.Empty;
+			}
+
+			var sb = new StringBuilder(value.Length * count);
+			for (var i = 0; i < count; i++)
+			{
+				sb.Append(value);
+			}
+
+			return sb.ToString();
+		}
 	}
 }
