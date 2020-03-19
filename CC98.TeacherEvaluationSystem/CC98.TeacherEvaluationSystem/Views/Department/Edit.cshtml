@@ -1,0 +1,25 @@
+﻿@using Microsoft.AspNetCore.Mvc.Localization
+@model Department
+@inject IViewLocalizer ViewLocalizer
+
+@{
+	ViewBag.Title = ViewLocalizer["编辑部门 - {0}", Model.Name];
+}
+
+<form asp-controller="Department" asp-action="Edit" asp-antiforgery="true" method="post">
+
+	<input asp-for="Id" type="hidden" />
+
+	<div class="row justify-content-center">
+		<div class="col-12 col-sm-9 col-md-6">
+
+			<partial name="_EditPartial" />
+
+			<hr />
+			<div class="text-danger" asp-validation-summary="ModelOnly"></div>
+			<button type="submit" class="btn btn-primary">编辑部门</button>
+			<button type="reset" class="btn btn-outline-secondary">撤销更改</button>
+		</div>
+	</div>
+
+</form>

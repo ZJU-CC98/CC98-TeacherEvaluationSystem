@@ -40,7 +40,25 @@ namespace CC98.TeacherEvaluationSystem.Controllers
 		/// <param name="page">页码。</param>
 		/// <param name="cancellationToken">用于取消操作的令牌。</param>
 		/// <returns>操作结果。</returns>
+		[HttpGet]
+		[AllowAnonymous]
 		public async Task<IActionResult> Index(int page = 1, CancellationToken cancellationToken = default)
+		{
+			var items = from i in DbContext.Departments
+						orderby i.Name
+						select i;
+
+			return View(await items.ToPagedListAsync(12, page, cancellationToken));
+		}
+
+		/// <summary>
+		/// 显示管理页面。
+		/// </summary>
+		/// <param name="page">页码。</param>
+		/// <returns>用于取消操作的令牌。</returns>
+		[HttpGet]
+		[Authorize(Policies.Edit)]
+		public async Task<IActionResult> Manage(int page = 1, CancellationToken cancellationToken = default)
 		{
 			var items = from i in DbContext.Departments
 						orderby i.Name
@@ -64,6 +82,7 @@ namespace CC98.TeacherEvaluationSystem.Controllers
 		/// 执行创建部门操作。
 		/// </summary>
 		/// <param name="model">数据模型。</param>
+		/// <param name="cancellationToken">用于取消操作的令牌。</param>
 		/// <returns>操作结果。</returns>
 		[HttpPost]
 		[Authorize(Policies.Edit)]
@@ -95,9 +114,65 @@ namespace CC98.TeacherEvaluationSystem.Controllers
 		}
 
 		/// <summary>
+		/// 显示部门编辑页面。
+		/// </summary>
+		/// <param name="id">要编辑的部门的标识。</param>
+		/// <param name="cancellationToken">用于取消操作的令牌。</param>
+		/// <returns>操作结果。</returns>
+		[HttpGet]
+		[Authorize(Policies.Edit)]
+		public async Task<IActionResult> Edit(int id, CancellationToken cancellationToken = default)
+		{
+			var item = await DbContext.Departments.FindAsync(new object[] { id }, cancellationToken);
+
+			if (item == null)
+			{
+				return NotFound();
+			}
+
+			return View(item);
+		}
+
+		/// <summary>
+		/// 执行编辑部门操作。
+		/// </summary>
+		/// <param name="model">数据模型。</param>
+		/// <param name="cancellationToken">用于取消操作的令牌。</param>
+		/// <returns>操作结果。</returns>
+		[HttpPost]
+		[Authorize(Policies.Edit)]
+		[ValidateAntiForgeryToken]
+		public async Task<IActionResult> Edit(Department model, CancellationToken cancellationToken = default)
+		{
+			await CheckDepartmentRelationshipAsync(model, cancellationToken);
+
+			if (ModelState.IsValid)
+			{
+				DbContext.Departments.Update(model);
+
+				try
+				{
+					await DbContext.SaveChangesAsync(cancellationToken);
+					MessageAccessor.Messages.Add(OperationMessageLevel.Success, "操作成功",
+						string.Format(CultureInfo.CurrentUICulture, "你已经成功编辑了部门 {0}", model.Name));
+
+					return RedirectToAction("Index", "Department");
+
+				}
+				catch (DbUpdateException ex)
+				{
+					ModelState.AddModelError(string.Empty, ex.GetBaseMessage());
+				}
+			}
+
+			return View(model);
+		}
+
+		/// <summary>
 		/// 查看部门详细信息。
 		/// </summary>
 		/// <param name="id">部门标识。</param>
+		/// <param name="cancellationToken">用于取消操作的令牌。</param>
 		/// <returns>操作结果。</returns>
 		[HttpGet]
 		public async Task<IActionResult> Detail(int id, CancellationToken cancellationToken = default)
@@ -114,6 +189,8 @@ namespace CC98.TeacherEvaluationSystem.Controllers
 			{
 				return NotFound();
 			}
+
+			return View(item);
 		}
 
 		/// <summary>

@@ -8,26 +8,7 @@
 	<div class="row justify-content-center">
 		<div class="col-12 col-sm-9 col-md-6">
 
-			<div class="form-group">
-				<label asp-for="Name">部门名称</label>
-				<input type="text" asp-for="Name" class="form-control" />
-				<span class="text-danger" asp-validation-for="Name"></span>
-				<small class="form-text text-muted">部门的名称。将会显示在多个页面。你可以稍后修改这个名称。</small>
-			</div>
-			
-			<div class="form-group">
-				<label asp-for="Description">部门描述</label>
-				<textarea row="3" asp-for="Description" class="form-control"></textarea>
-				<span class="text-danger" asp-validation-for="Description"></span>
-				<small class="form-text text-muted">部门的描述，将会显示在多个页面。</small>
-			</div>
-
-			<div class="form-group">
-				<label asp-for="ParentId">上级部门</label>
-				<vc:department-selector asp-for="ParentId" />
-				<span class="text-danger" asp-validation-for="Name"></span>
-				<small class="form-text text-muted">部门所属的上级部门。请注意部门之间不能产生循环上级关系。</small>
-			</div>
+			<partial name="_EditPartial" />
 
 			<hr />
 			<div class="text-danger" asp-validation-summary="ModelOnly"></div>
